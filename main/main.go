@@ -1,12 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"net/http"
+
+	"github.com/labstack/echo"
+)
 
 func main() {
-	fmt.Println("Hello Golang")
-}
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
 
-// coding => Build => Run
-// Build: go build fileName
-// Run: hello.exe
-// Run: go run hello.go
+	e.GET("/json", func(c echo.Context) error {
+		return c.JSONBlob(
+			http.StatusOK,
+			[]byte(`{ "id": "1", "msg": "Hello, Boatswain!" }`),
+		)
+	})
+
+	e.GET("/html", func(c echo.Context) error {
+		return c.HTML(
+			http.StatusOK,
+			"<h1>Hello, Boatswain!</h1>",
+		)
+	})
+
+	e.Logger.Fatal(e.Start(":1323"))
+}
